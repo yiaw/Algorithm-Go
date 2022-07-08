@@ -55,28 +55,29 @@ func bfs(y, x int32) {
 			break
 		}
 
+		p := l.(Location)
 		if l.(Location).A < k {
 			for i := 0; i < 8; i++ {
 				iy = l.(Location).Y + hy[i]
 				ix = l.(Location).X + hx[i]
 				if (0 <= ix && ix < w) && (0 <= iy && iy < h) {
-					if metrix[iy][ix] == 0 && !chk[iy][ix][l.(Location).A] {
-						chk[iy][ix][l.(Location).A] = true
+					if metrix[iy][ix] == 0 && !chk[iy][ix][l.(Location).A+1] {
+						chk[iy][ix][l.(Location).A+1] = true
 						q.Enque(Location{X: ix, Y: iy, A: l.(Location).A + 1, M: l.(Location).M + 1})
 
 					}
 				}
 			}
-		} else {
-			for i := 0; i < 4; i++ {
-				iy = l.(Location).Y + my[i]
-				ix = l.(Location).X + mx[i]
-				if (0 <= ix && ix < w) && (0 <= iy && iy < h) {
-					if metrix[iy][ix] == 0 && !chk[iy][ix][l.(Location).A] {
-						chk[iy][ix][l.(Location).A] = true
-						q.Enque(Location{X: ix, Y: iy, A: l.(Location).A, M: l.(Location).M + 1})
+		}
 
-					}
+		for i := 0; i < 4; i++ {
+			iy = l.(Location).Y + my[i]
+			ix = l.(Location).X + mx[i]
+			if (0 <= ix && ix < w) && (0 <= iy && iy < h) {
+				if metrix[iy][ix] == 0 && !chk[iy][ix][l.(Location).A] {
+					chk[iy][ix][l.(Location).A] = true
+					q.Enque(Location{X: ix, Y: iy, A: l.(Location).A, M: l.(Location).M + 1})
+
 				}
 			}
 		}
