@@ -27,37 +27,27 @@ var metrix [1001][1001]int32
 type Location struct {
 	X int32 // x 좌표
 	Y int32 // y 좌표
-	M int32 // 최소 일수
 }
 
-var chk [1001][1001]bool
+var my = []int32{-1, 0, 1, 0}
+var mx = []int32{0, 1, 0, -1}
+var q Que
 
-func bfs(y, x int32) int32 {
-	var q Que
-	var pos Location
-	var my = []int32{-1, 0, 1, 0}
-	var mx = []int32{0, 1, 0, -1}
-
-	l := Location{X: x, Y: y, M: 0}
-	chk[y][x] = true
-	q.Enque(l)
-
+func bfs() {
 	for !q.IsEmpty() {
 		l, _ := q.Deque()
-		pos = l.(Location)
-		fmt.Printf("x:%d y:%d m:%d\n", pos.X, pos.Y, pos.M)
+		pos := l.(Location)
 		for i := 0; i < 4; i++ {
 			ix := pos.X + mx[i]
 			iy := pos.Y + my[i]
 			if (0 <= ix && ix < m) && (0 <= iy && iy < n) {
-				if metrix[iy][ix] == 0 && !chk[iy][ix] {
-					chk[iy][ix] = true
-					q.Enque(Location{X: ix, Y: iy, M: pos.M + 1})
+				if metrix[iy][ix] == 0 {
+					metrix[iy][ix] = metrix[pos.Y][pos.X] + 1
+					q.Enque(Location{X: ix, Y: iy})
 				}
 			}
 		}
 	}
-	return pos.M + 1
 }
 
 func main() {
@@ -77,21 +67,36 @@ func main() {
 		for j := 0; j < int(m); j++ {
 			tempValue, _ := strconv.ParseInt(string(str[j]), 10, 64)
 			metrix[i][j] = int32(tempValue)
-		}
-
-	}
-
-	for i := 0; i < int(n); i++ {
-		for j := 0; j < int(m); j++ {
-			if metrix[i][j] == 0 && !chk[i][j] {
-				move := bfs(int32(i), int32(j))
-				fmt.Printf("%d\n", move)
+			if metrix[i][j] == 1 {
+				l := Location{X: int32(j), Y: int32(i)}
+				q.Enque(l)
 			}
 		}
 	}
 
-	//fmt.Fprintf(writer, "%d\n", cnt)
+	bfs()
+	var ret int32
+	var check bool
+	for i := 0; i < int(n); i++ {
+		for j := 0; j < int(m); j++ {
+			if metrix[i][j] == 0 {
+				ret = -1
+				check = true
+				break
+			}
 
+			if ret < metrix[i][j] {
+				ret = metrix[i][j]
+			}
+		}
+		if check {
+			break
+		}
+	}
+	if ret == -1 {
+		ret = 0
+	}
+	fmt.Fprintf(writer, "%d\n", ret-1)
 	writer.Flush()
 }
 
