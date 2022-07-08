@@ -55,7 +55,6 @@ func bfs(y, x int32) {
 			break
 		}
 
-		p := l.(Location)
 		if l.(Location).A < k {
 			for i := 0; i < 8; i++ {
 				iy = l.(Location).Y + hy[i]
