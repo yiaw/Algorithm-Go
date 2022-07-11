@@ -1,5 +1,6 @@
 package main
 
+//https://www.acmicpc.net/problem/1525
 import (
 	"bufio"
 	"fmt"
@@ -16,7 +17,6 @@ var dst = "123456780"
 var chk map[string]int
 
 // key 는 변경된 string을 확인한 경우, 해당 방문 경로까지 개수
-
 type Value struct {
 	cur string
 	cnt int
