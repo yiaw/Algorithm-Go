@@ -38,7 +38,6 @@ func bfs(src, dst int) string {
 		}
 		for _, f := range []func(int) (int, string){D, S, L, R} {
 			vv, str := f(v.cur)
-			fmt.Println(v.cur, vv, str)
 			if vv == dst {
 				return v.order + str
 			}
@@ -99,33 +98,33 @@ func S(input int) (int, string) {
 }
 
 func R(input int) (int, string) {
-	// 1234 > 4123
-	// 1234 % 10 = 4 * 1000 + 1234/10 = 123 4123
+	var std int
 
-	// 100 > 010 : 10
-	array := NumberToArray(input)
-	data := array[3]
-	for i := 3; i > 0; i-- {
-		array[i] = array[i-1]
+	if input >= 1000 {
+		std = 1000
+	} else if input >= 100 {
+		std = 100
+	} else if input >= 10 {
+		std = 10
+	} else if input >= 0 {
+		std = 1
 	}
-	array[0] = data
-	return ArrayToNumber(array), "R"
-	//return (input%10)*1000 + (input / 10), "R"
+	return (input%10)*std + (input / 10), "R"
 }
 
 func L(input int) (int, string) {
-	// 1234 > 2341
-	// 1234 % 1000 = 234*10 + 1234 / 1000 = 2340 + 1
+	var std int
 
-	// 100 > 001 : 1
-	array := NumberToArray(input)
-	data := array[0]
-	for i := 0; i < len(array)-1; i++ {
-		array[i] = array[i+1]
+	if input >= 1000 {
+		std = 1000
+	} else if input >= 100 {
+		std = 100
+	} else if input >= 10 {
+		std = 10
+	} else if input >= 0 {
+		std = 1
 	}
-	array[3] = data
-	return ArrayToNumber(array), "L"
-	//return (input%1000)*10 + (input / 1000), "L"
+	return (input%std)*10 + (input / std), "L"
 }
 
 // Que 자료 구조
@@ -149,57 +148,3 @@ func (q *Que) Deque() interface{} {
 
 	return data
 }
-func NumberToArray(input int) []int {
-	v := []int{}
-	data := input
-
-	index := 3
-	for data != 0 {
-		if index < 0 {
-			break
-		}
-		v[index] = data % 10
-		data /= 10
-		index--
-	}
-	return v
-}
-func ArrayToNumber(input []int) int {
-	var ret int
-	var std int = 1
-	for i := 0; i < len(input)-1; i++ {
-		std *= 10
-	}
-	for i := 0; i < len(input); i++ {
-		ret += input[i] * std
-		std /= 10
-	}
-	return ret
-}
-
-/*
-func NumberToArray(input int) [4]int {
-	data := input
-	var v [4]int
-	index := 3
-	for data != 0 {
-		if index < 0 {
-			break
-		}
-		v[index] = data % 10
-		data /= 10
-		index--
-	}
-	return v
-}
-
-func ArrayToNumber(input [4]int) int {
-	var ret int
-	var std int = 1000
-	for i := 0; i < 4; i++ {
-		ret += input[i] * std
-		std /= 10
-	}
-	return ret
-}
-*/
