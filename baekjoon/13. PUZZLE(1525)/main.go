@@ -32,7 +32,7 @@ func bfs(y, x int) {
 		v := o.(Value)
 
 		if v.cur == dst {
-			fmt.Println(v.cnt)
+			chk[v.cur] = v.cnt
 			break
 		}
 
@@ -44,7 +44,7 @@ func bfs(y, x int) {
 			if (0 <= dx && dx < 3) && (0 <= dy && dy < 3) {
 				tm := swap(m, x, y, dx, dy)
 				if _, ok := chk[MetrixToString(tm)]; !ok {
-					chk[MetrixToString(tm)] = 0
+					chk[MetrixToString(tm)] = v.cnt + 1
 					q.Enque(Value{cur: MetrixToString(tm), cnt: v.cnt + 1})
 				}
 			}
@@ -70,7 +70,13 @@ func main() {
 		}
 	}
 
-	fmt.Println(chk[dst])
+	ret, ok := chk[dst]
+	if ok {
+		fmt.Println(ret)
+	} else {
+		fmt.Println(-1)
+	}
+
 }
 
 func readLine(reader *bufio.Reader) string {
@@ -102,9 +108,13 @@ func (q *Que) Deque() interface{} {
 }
 
 func StringToArray(str string) [3][3]int {
+	var m [3][3]int
 	for i := 0; i < 9; i++ {
-
+		y := i / 3
+		x := i % 3
+		m[y][x], _ = strconv.Atoi(string(str[i]))
 	}
+	return m
 }
 
 func findZero(metrix [3][3]int) (int, int) {
@@ -116,10 +126,11 @@ func findZero(metrix [3][3]int) (int, int) {
 			}
 		}
 	}
+	return -1, -1
 }
 
 func swap(m [3][3]int, x1, y1, x2, y2 int) [3][3]int {
-	v := m[x2][y2]
+	v := m[y2][x2]
 	m[y2][x2] = m[y1][x1]
 	m[y1][x1] = v
 	return m
