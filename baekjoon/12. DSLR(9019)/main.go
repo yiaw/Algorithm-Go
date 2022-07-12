@@ -3,6 +3,7 @@ package main
 //https://www.acmicpc.net/problem/9019
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -14,19 +15,19 @@ import (
 // t : test case, a : src, b : dst
 var t, a, b int
 var ab [][2]int
-var chk [10000]bool
 
 // D 는 각 자리수 2배로 근데 9999 보다 큰 수일 경우에만 10000 나눈 나머지
 // S 는 N에서 1을 뺀 결과 nd이 0이면 9999
 // L 은 각 자리수를 왼편으로 회전
 // R 은 각 자리수를 오른편으로 회전
 type Value struct {
-	cur   int    // 현재 int 값
-	order string // 여기까지 온 DSLR 계산 방식
+	cur   int          // 현재 int 값
+	order bytes.Buffer // 여기까지 온 DSLR 계산 방식
 }
 
 func bfs(src, dst int) string {
 	var q Que
+	var chk [10000]bool
 	q.Enque(Value{cur: src})
 	chk[src] = true
 
@@ -34,16 +35,24 @@ func bfs(src, dst int) string {
 		o := q.Deque()
 		v := o.(Value)
 		if v.cur == dst {
-			return v.order
+			return v.order.String()
 		}
+
 		for _, f := range []func(int) (int, string){D, S, L, R} {
 			vv, str := f(v.cur)
 			if vv == dst {
-				return v.order + str
+				v.order.WriteString(str)
+				return v.order.String()
 			}
 			if !chk[vv] {
 				chk[vv] = true
-				q.Enque(Value{cur: vv, order: v.order + str})
+				ev := Value{
+					cur: vv,
+				}
+				ev.order.WriteString(v.order.String())
+				ev.order.WriteString(str)
+				q.Enque(ev)
+				//q.Enque(Value{cur: vv, order: v.order + str})
 			}
 		}
 
@@ -98,35 +107,57 @@ func S(input int) (int, string) {
 }
 
 func R(input int) (int, string) {
-	var std int
-
-	if input >= 1000 {
-		std = 1000
-	} else if input >= 100 {
-		std = 100
-	} else if input >= 10 {
-		std = 10
-	} else if input >= 0 {
-		std = 1
-	}
-	return (input%10)*std + (input / 10), "R"
+	return (input%10)*1000 + (input / 10), "R"
 }
 
 func L(input int) (int, string) {
-	var std int
-
-	if input >= 1000 {
-		std = 1000
-	} else if input >= 100 {
-		std = 100
-	} else if input >= 10 {
-		std = 10
-	} else if input >= 0 {
-		std = 1
-	}
-	return (input%std)*10 + (input / std), "L"
+	return (input%1000)*10 + (input / 1000), "L"
 }
 
+// O(1) Que
+type Que struct {
+	head *Node
+	tail *Node
+}
+
+type Node struct {
+	next *Node
+	prev *Node
+	data interface{}
+}
+
+// 꼬리에 붙이기
+func (q *Que) Enque(data interface{}) {
+	n := &Node{
+		data: data,
+	}
+
+	if q.head == nil {
+		q.head = n
+		q.tail = n
+	} else {
+		n.prev = q.tail
+		q.tail.next = n
+		q.tail = n
+	}
+}
+
+// head 에서 가져오기
+func (q *Que) Deque() interface{} {
+	if q.head == nil {
+		return nil
+	}
+
+	del := q.head
+	q.head = q.head.next
+	return del.data
+}
+
+func (q *Que) IsEmpty() bool {
+	return q.head == nil
+}
+
+/*
 // Que 자료 구조
 type Que []interface{}
 
@@ -145,6 +176,6 @@ func (q *Que) Deque() interface{} {
 
 	data := (*q)[0]
 	*q = (*q)[1:]
-
 	return data
 }
+*/
