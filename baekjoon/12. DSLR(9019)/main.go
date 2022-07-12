@@ -61,7 +61,7 @@ func bfs(src, dst int) string {
 }
 
 func main() {
-	var ret []string
+	//var ret []string
 	reader := bufio.NewReaderSize(os.Stdin, 1024*1024*24)
 	writer := bufio.NewWriterSize(os.Stdout, 1024*1024*24)
 
@@ -79,11 +79,7 @@ func main() {
 	}
 
 	for i := 0; i < t; i++ {
-		ret = append(ret, bfs(ab[i][0], ab[i][1]))
-	}
-
-	for _, s := range ret {
-		fmt.Fprintf(writer, "%s\n", s)
+		fmt.Fprintf(writer, "%s\n", bfs(ab[i][0], ab[i][1]))
 	}
 	writer.Flush()
 }
