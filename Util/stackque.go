@@ -1,6 +1,9 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 type Stack []interface{}
 
@@ -25,6 +28,7 @@ func (s *Stack) Pop() (interface{}, error) {
 	return data, nil
 }
 
+// O(N) Que
 type Que []interface{}
 
 func (q *Que) IsEmpty() bool {
@@ -44,4 +48,71 @@ func (q *Que) Deque() (interface{}, error) {
 	*q = (*q)[1:]
 
 	return data, nil
+}
+
+// O(1) Que
+type Que struct {
+	head *Node
+	tail *Node
+}
+
+type Node struct {
+	next *Node
+	prev *Node
+	data interface{}
+}
+
+// 꼬리에 붙이기
+func (l *Que) Enque(data interface{}) {
+	n := &Node{
+		data: data,
+	}
+
+	if l.head == nil {
+		l.head = n
+		l.tail = n
+	} else {
+		n.prev = l.tail
+		l.tail.next = n
+		l.tail = n
+	}
+}
+
+// head 에서 가져오기
+func (l *Que) Deque() interface{} {
+	if l.head == nil {
+		return nil
+	}
+
+	del := l.head
+	l.head = l.head.next
+	return del.data
+}
+
+func (l *Que) IsEmpty() bool {
+	return l.head == nil
+}
+
+func (l *Que) Print() {
+	if l.head == nil {
+		return
+	}
+
+	n := l.head
+	for n != nil {
+		fmt.Println(n.data)
+		n = n.next
+	}
+}
+
+func main() {
+	l := &List{}
+	l.Push(1)
+	l.Push(2)
+	l.Print()
+
+	fmt.Println(l.Pop())
+	fmt.Println(l.Pop())
+	fmt.Println(l.IsEmpty())
+
 }
