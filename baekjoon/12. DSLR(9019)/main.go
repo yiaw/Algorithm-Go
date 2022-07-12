@@ -62,7 +62,8 @@ func bfs(src, dst int) string {
 
 func main() {
 	var ret []string
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReaderSize(os.Stdin, 1024*1024*24)
+	writer := bufio.NewWriterSize(os.Stdout, 1024*1024*24)
 
 	tempString := readLine(reader)
 	t, _ = strconv.Atoi(tempString)
@@ -82,9 +83,9 @@ func main() {
 	}
 
 	for _, s := range ret {
-		fmt.Println(s)
+		fmt.Fprintf(writer, "%s\n", s)
 	}
-
+	writer.Flush()
 }
 
 func readLine(reader *bufio.Reader) string {
