@@ -58,7 +58,7 @@ func main() {
 	mTemp := readLine(reader)
 	m, _ = strconv.Atoi(mTemp)
 
-	for i := 0; i < m; i++ {
+	for i := 1; i <= m; i++ {
 		xyTemp := strings.Split(readLine(reader), " ")
 		x, _ := strconv.Atoi(xyTemp[0])
 		y, _ := strconv.Atoi(xyTemp[1])
