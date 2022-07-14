@@ -52,7 +52,6 @@ func bfs(src, dst int) string {
 				ev.order.WriteString(v.order.String())
 				ev.order.WriteString(str)
 				q.Enque(ev)
-				//q.Enque(Value{cur: vv, order: v.order + str})
 			}
 		}
 
