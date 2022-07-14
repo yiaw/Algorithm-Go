@@ -152,26 +152,3 @@ func (q *Que) Deque() interface{} {
 func (q *Que) IsEmpty() bool {
 	return q.head == nil
 }
-
-/*
-// Que 자료 구조
-type Que []interface{}
-
-func (q *Que) IsEmpty() bool {
-	return len(*q) == 0
-}
-
-func (q *Que) Enque(data interface{}) {
-	(*q) = append(*q, data)
-}
-
-func (q *Que) Deque() interface{} {
-	if (*q).IsEmpty() {
-		return nil
-	}
-
-	data := (*q)[0]
-	*q = (*q)[1:]
-	return data
-}
-*/
