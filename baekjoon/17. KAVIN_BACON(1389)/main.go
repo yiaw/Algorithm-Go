@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -17,7 +18,7 @@ var n, m int
 // 관계 그래프를 인접 행렬로 표시
 // n + 1 에는 n열의 값의 합을 구함
 var metrix [101][101]int
-
+var res [101]int
 var cnt [101][101]int
 
 // 해당 유저의 케빈 베이컨  6단계 법칙에 의해 구해진 수
@@ -25,20 +26,33 @@ var cnt [101][101]int
 // a 기준으로 b를 방문 할때 몇단계인지 기입
 // a / b로 기준으로하여 제일 적은 수가 기입된 a / b 값을 반환
 
-func bfs(n int) int {
+func bfs(cur int) int {
 	var q Que
 	var chk [101]bool
-	q.Enque(n)
-
+	q.Enque(cur)
+	chk[cur] = true
 	for !q.IsEmpty() {
+		o := q.Deque()
+		t := o.(int)
 		for i := 1; i <= n; i++ {
-			if !chk[i] {
-
+			end := metrix[t][i]
+			if !chk[end] {
+				chk[end] = true
+				q.Enque(end)
+				cnt[end][cur] = cnt[t][cur] + 1
+				cnt[cur][end] = cnt[cur][t] + 1
 			}
 		}
-
 	}
+
+	var ret int
+	for i := 1; i <= n; i++ {
+		ret += cnt[cur][i]
+	}
+	fmt.Println(ret)
+	return ret
 }
+
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 
@@ -59,11 +73,20 @@ func main() {
 		metrix[b][a] = 1
 	}
 
+	var ret []int
 	for i := 1; i <= n; i++ {
 		// 1번 user부터 시작
 		ret = append(ret, bfs(i))
 	}
 
+	min := ret[0]
+	for i := 0; i < n; i++ {
+		if min > ret[i] {
+			min = ret[i]
+		}
+	}
+
+	fmt.Println(min)
 }
 
 func readLine(reader *bufio.Reader) string {
