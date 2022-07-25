@@ -18,39 +18,34 @@ var n, m int
 // 관계 그래프를 인접 행렬로 표시
 // n + 1 에는 n열의 값의 합을 구함
 var metrix [101][101]int
-var res [101]int
+
 var cnt [101][101]int
 
 // 해당 유저의 케빈 베이컨  6단계 법칙에 의해 구해진 수
 // cnt[a][b] 라고 가정 하면
-// a 기준으로 b를 방문 할때 몇단계인지 기입
 // a / b로 기준으로하여 제일 적은 수가 기입된 a / b 값을 반환
-
-func bfs(cur int) int {
-	var q Que
-	var chk [101]bool
-	q.Enque(cur)
-	chk[cur] = true
-	for !q.IsEmpty() {
-		o := q.Deque()
-		t := o.(int)
+func Min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+func sol() {
+	for k := 1; k <= n; k++ {
 		for i := 1; i <= n; i++ {
-			end := metrix[t][i]
-			if !chk[end] {
-				chk[end] = true
-				q.Enque(end)
-				cnt[end][cur] = cnt[t][cur] + 1
-				cnt[cur][end] = cnt[cur][t] + 1
+			for j := 1; j <= n; j++ {
+				if i == j {
+					continue
+				} else if metrix[i][k] != 0 && metrix[k][j] != 0 {
+					if metrix[i][j] == 0 {
+						metrix[i][j] = metrix[i][k] + metrix[k][j]
+					} else {
+						metrix[i][j] = Min(metrix[i][j], metrix[i][k]+metrix[k][j])
+					}
+				}
 			}
 		}
 	}
-
-	var ret int
-	for i := 1; i <= n; i++ {
-		ret += cnt[cur][i]
-	}
-	fmt.Println(ret)
-	return ret
 }
 
 func main() {
@@ -72,21 +67,23 @@ func main() {
 		metrix[a][b] = 1
 		metrix[b][a] = 1
 	}
+	sol()
 
-	var ret []int
+	ret := 999999999
+	per := 1
+
 	for i := 1; i <= n; i++ {
-		// 1번 user부터 시작
-		ret = append(ret, bfs(i))
-	}
+		temp_ret := 0
+		for j := 1; j <= n; j++ {
+			temp_ret = temp_ret + metrix[i][j]
+		}
 
-	min := ret[0]
-	for i := 0; i < n; i++ {
-		if min > ret[i] {
-			min = ret[i]
+		if ret > temp_ret {
+			ret = temp_ret
+			per = i
 		}
 	}
-
-	fmt.Println(min)
+	fmt.Println(per)
 }
 
 func readLine(reader *bufio.Reader) string {
@@ -95,18 +92,4 @@ func readLine(reader *bufio.Reader) string {
 		return ""
 	}
 	return strings.TrimRight(string(buff), "\r\n")
-}
-
-type Que []interface{}
-
-func (q *Que) IsEmpty() bool {
-	return len(*q) == 0
-}
-func (q *Que) Enque(data interface{}) {
-	*q = append(*q, data)
-}
-func (q *Que) Deque() interface{} {
-	data := (*q)[0]
-	(*q) = (*q)[1:]
-	return data
 }
